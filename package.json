@@ -1,6 +1,6 @@
 {
   "name": "angularjs-sha512",
-  "version": "0.7.1",
+  "version": "1.0.0",
   "description": "This is a simple SHA-512, SHA-384, SHA-512/224, SHA-512/256 hash functions for AngularJs supports UTF-8 encoding.",
   "main": "src/sha512.js",
   "devDependencies": {
@@ -49,5 +49,8 @@
     "exclude": [
       "tests"
     ]
+  },
+  "dependencies": {
+    "angular": "1.6.9"
   }
 }

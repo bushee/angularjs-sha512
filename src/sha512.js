@@ -3,6 +3,7 @@
  *
  * @version 0.7.1
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @author Krzysztof "Bushee" Nowaczyk [bushee01@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
  */
@@ -11,21 +12,7 @@
   'use strict';
 
   var ERROR = 'input is invalid type';
-  var WINDOW = typeof window === 'object';
-  var root = WINDOW ? window : {};
-  if (root.JS_SHA512_NO_WINDOW) {
-    WINDOW = false;
-  }
-  var WEB_WORKER = !WINDOW && typeof self === 'object';
-  var NODE_JS = !root.JS_SHA512_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
-  if (NODE_JS) {
-    root = global;
-  } else if (WEB_WORKER) {
-    root = self;
-  }
-  var COMMON_JS = !root.JS_SHA512_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var AMD = typeof define === 'function' && define.amd;
-  var ARRAY_BUFFER = !root.JS_SHA512_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
+  var ARRAY_BUFFER = typeof ArrayBuffer !== 'undefined';
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [-2147483648, 8388608, 32768, 128];
   var SHIFT = [24, 16, 8, 0];
@@ -76,13 +63,13 @@
 
   var blocks = [];
 
-  if (root.JS_SHA512_NO_NODE_JS || !Array.isArray) {
+  if (!Array.isArray) {
     Array.isArray = function (obj) {
       return Object.prototype.toString.call(obj) === '[object Array]';
     };
   }
 
-  if (ARRAY_BUFFER && (root.JS_SHA512_NO_ARRAY_BUFFER_IS_VIEW || !ArrayBuffer.isView)) {
+  if (ARRAY_BUFFER && !ArrayBuffer.isView) {
     ArrayBuffer.isView = function (obj) {
       return typeof obj === 'object' && obj.buffer && obj.buffer.constructor === ArrayBuffer;
     };
@@ -814,7 +801,6 @@
       }
       notString = true;
     }
-    var length = key.length;
     if (!notString) {
       var bytes = [], length = key.length, index = 0, code;
       for (var i = 0; i < length; ++i) {
@@ -871,27 +857,13 @@
     }
   };
 
-  var exports = createMethod(512);
-  exports.sha512 = exports;
-  exports.sha384 = createMethod(384);
-  exports.sha512_256 = createMethod(256);
-  exports.sha512_224 = createMethod(224);
-  exports.sha512.hmac = createHmacMethod(512);
-  exports.sha384.hmac = createHmacMethod(384);
-  exports.sha512_256.hmac = createHmacMethod(256);
-  exports.sha512_224.hmac = createHmacMethod(224);
-
-  if (COMMON_JS) {
-    module.exports = exports;
-  } else {
-    root.sha512 = exports.sha512;
-    root.sha384 = exports.sha384;
-    root.sha512_256 = exports.sha512_256;
-    root.sha512_224 = exports.sha512_224;
-    if (AMD) {
-      define(function () {
-        return exports;
-      });
-    }
-  }
+  angular.module('sha512', [])
+      .value('sha512', createMethod(512))
+      .value('sha384', createMethod(384))
+      .value('sha256', createMethod(256))
+      .value('sha224', createMethod(224))
+      .value('hmacSha512', createHmacMethod(512))
+      .value('hmacSha384', createHmacMethod(384))
+      .value('hmacSha256', createHmacMethod(256))
+      .value('hmacSha224', createHmacMethod(224));
 })();
