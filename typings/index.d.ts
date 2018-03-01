@@ -1,0 +1,1 @@
+export type IHashFunc = (input: string) => string;

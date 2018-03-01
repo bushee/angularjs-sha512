@@ -52,5 +52,6 @@
   },
   "dependencies": {
     "angular": "1.6.9"
-  }
+  },
+  "typings": "typings/index.d.ts"
 }
