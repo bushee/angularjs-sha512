@@ -5,7 +5,7 @@ A simple SHA-512, SHA-384, SHA-512/224, SHA-512/256 hash functions for AngularJS
 
 ## Installation
 
-    npm install js-sha512
+    npm install angularjs-sha512
 
 ## Usage
 You could use like this:
